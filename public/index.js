@@ -12,9 +12,8 @@ document.addEventListener("DOMContentLoaded", () => {
     .then((response) => response.json())
     .then((data) => {
       function getColor(d) {
-        const r = d.normalizedDistance;
-        const color = [255 * (1 - r * 2), 128 * r, 255 * r, 255 * (1 - r)];
-        return color;
+        const r = d.velocity * 100; // Velocity is already normalized to [0, 1]
+        return [255 * r, 255 * (1 - r), 0, 255]; // Red increases with r, green decreases with r
       }
 
       const deckgl = new deck.DeckGL({
