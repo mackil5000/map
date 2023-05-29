@@ -48,6 +48,9 @@ app.get("/shapes", (req, res) => {
     })
     .on("end", () => {
       // calculate velocities
+      // we don't have any actual timestamps to calculate the velocity from,
+      //only the index of when distance travelled was written
+
       let minVelocity = Infinity;
       let maxVelocity = 100;
 
