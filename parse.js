@@ -15,17 +15,19 @@ app.get("/shapes", (req, res) => {
   fs.createReadStream("shapes.txt")
     .pipe(csv())
     .on("data", (row) => {
-      row.shape_pt_lat = parseFloat(row.shape_pt_lat);
-      row.shape_pt_lon = parseFloat(row.shape_pt_lon);
+      if (counter < 1000000) {
+        row.shape_pt_lat = parseFloat(row.shape_pt_lat);
+        row.shape_pt_lon = parseFloat(row.shape_pt_lon);
 
-      // Check if we already have data for this shape_id
-      if (!data[row.shape_id]) {
-        data[row.shape_id] = [];
+        // Check if we already have data for this shape_id
+        if (!data[row.shape_id]) {
+          data[row.shape_id] = [];
+        }
+
+        // Add the point to the appropriate array
+        data[row.shape_id].push(row);
+        counter++;
       }
-
-      // Add the point to the appropriate array
-      data[row.shape_id].push(row);
-      counter++;
     })
     .on("end", () => {
       res.json(data); // send the data as JSON
