@@ -1,9 +1,11 @@
-import { createReadStream } from "fs";
-import csv from "csv-parser";
-import express, { static as stat } from "express";
-import { join } from "path";
-import compression from "compression";
+const { createReadStream } = require("fs");
+const csv = require("csv-parser");
+const express = require("express");
+const { static: stat } = express;
+const { join } = require("path");
+const compression = require("compression");
 
+const DEFAULT_NUMBER_OF_ROWS = 500000;
 const app = express();
 const port = 5000;
 
@@ -21,21 +23,19 @@ app.get("/shapes", (req, res) => {
 
   let data = {};
   let counter = 0;
+  const numberOfRows = Number(req.query.rows) || DEFAULT_NUMBER_OF_ROWS;
+  console.log("formatting " + numberOfRows + " rows");
 
   createReadStream("shapes.txt")
     .pipe(csv())
     .on("data", (row) => {
-      if (counter < 500000) {
+      if (counter < numberOfRows) {
         row.shape_pt_lat = parseFloat(row.shape_pt_lat);
         row.shape_pt_lon = parseFloat(row.shape_pt_lon);
         row.shape_dist_traveled = parseFloat(row.shape_dist_traveled);
         row.shape_pt_sequence = parseFloat(row.shape_pt_sequence);
 
-        if (isNaN(row.shape_dist_traveled)) {
-          console.log(row.shape_dist_traveled);
-          return;
-        }
-
+        if (isNaN(row.shape_dist_traveled)) return;
         // check if we already have data for this shape_id
         if (!data[row.shape_id]) {
           data[row.shape_id] = [];
@@ -92,6 +92,4 @@ app.get("/shapes", (req, res) => {
     });
 });
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
+module.exports = app;
