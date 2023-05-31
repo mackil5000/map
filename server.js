@@ -24,9 +24,10 @@ app.get("/shapes", (req, res) => {
   let data = {};
   let counter = 0;
   const numberOfRows = Number(req.query.rows) || DEFAULT_NUMBER_OF_ROWS;
-  console.log("formatting " + numberOfRows + " rows");
+  const test = String(req.query.test) || false;
+  console.log("formatting " + numberOfRows + " rows. " + "Test: " + test);
 
-  createReadStream("shapes.txt")
+  createReadStream(test === "true" ? "shapes_test.txt" : "shapes.txt")
     .pipe(csv())
     .on("data", (row) => {
       if (counter < numberOfRows) {
