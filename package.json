@@ -5,7 +5,7 @@
   "description": "",
   "main": "start.js",
   "scripts": {
-    "test": "jest --detectOpenHandles",
+    "test": "jest",
     "start": "node start.js"
   },
   "keywords": [],
